@@ -44,6 +44,10 @@ export class UsersService {
     return this.usersRepository.findOneBy({ email });
   }
 
+  getAllUsers() {
+    return this.usersRepository.find();
+  }
+
   async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, 10);
   }

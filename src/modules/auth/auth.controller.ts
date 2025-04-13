@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Post,
@@ -10,6 +11,8 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/createUser.dto';
 import { UsersService } from '../users/users.service';
 import { SignUpDto } from '../users/dto/signUp.dto';
+import { Public } from '../../common/decorators/publicRoute.decorator';
+import { User } from '../users/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -17,6 +20,8 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService
   ) {}
+
+  @Public()
   @Post('signin')
   async signIn(@Body() signInDto: SignInDto): Promise<{ accessToken: string }> {
     const token = await this.authService.signIn(signInDto);
@@ -28,6 +33,7 @@ export class AuthController {
     };
   }
 
+  @Public()
   @Post('signup')
   async create(@Body() data: CreateUserDto): Promise<SignUpDto> {
     const foundUser = await this.usersService.findByEmail(data.email);
@@ -42,5 +48,10 @@ export class AuthController {
       );
     }
     return user;
+  }
+
+  @Get('users')
+  async getUsers(): Promise<User[]> {
+    return await this.authService.getAllUsers();
   }
 }
