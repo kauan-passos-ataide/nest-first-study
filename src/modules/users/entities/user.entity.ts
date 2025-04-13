@@ -16,4 +16,7 @@ export class User implements UserInterface {
 
   @Column({ type: 'text', nullable: false })
   email: string;
+
+  @Column({ type: 'text', nullable: false })
+  password: string;
 }

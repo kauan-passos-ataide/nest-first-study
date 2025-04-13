@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { CreateUserDto } from './dto/createUserDto';
+import { CreateUserDto } from './dtos/createUser.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -12,7 +13,16 @@ export class UsersService {
   ) {}
   async create(data: CreateUserDto): Promise<User | null> {
     try {
-      const user = this.usersRepository.create(data);
+      const hash = await this.hashPassword(data.password);
+      if (!hash) {
+        return null;
+      }
+      const user = this.usersRepository.create({
+        name: data.name,
+        age: data.age,
+        email: data.email,
+        password: hash,
+      });
       return await this.usersRepository.save(user);
     } catch (error) {
       console.error('Erro ao criar usuário:', error);
@@ -20,11 +30,14 @@ export class UsersService {
     }
   }
 
-  getAll(): Promise<User[]> {
-    return this.usersRepository.find();
-  }
-
   findById(id: string): Promise<User | null> {
     return this.usersRepository.findOneBy({ id });
+  }
+  findByEmail(email: string): Promise<User | null> {
+    return this.usersRepository.findOneBy({ email });
+  }
+
+  async hashPassword(password: string): Promise<string> {
+    return bcrypt.hash(password, 10);
   }
 }
