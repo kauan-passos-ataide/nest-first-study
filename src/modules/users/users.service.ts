@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/createUser.dto';
 import * as bcrypt from 'bcrypt';
+import { SignUpDto } from './dto/signUp.dto';
 
 @Injectable()
 export class UsersService {
@@ -11,7 +12,7 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>
   ) {}
-  async create(data: CreateUserDto): Promise<User | null> {
+  async create(data: CreateUserDto): Promise<SignUpDto | null> {
     try {
       const hash = await this.hashPassword(data.password);
       if (!hash) {
@@ -23,7 +24,13 @@ export class UsersService {
         email: data.email,
         password: hash,
       });
-      return await this.usersRepository.save(user);
+      await this.usersRepository.save(user);
+      const signUpDto = {
+        name: data.name,
+        age: data.age,
+        email: data.email,
+      };
+      return signUpDto;
     } catch (error) {
       console.error('Erro ao criar usuário:', error);
       return null;

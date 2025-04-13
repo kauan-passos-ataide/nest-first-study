@@ -9,6 +9,7 @@ import { SignInDto } from './dto/signIn.dto';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/createUser.dto';
 import { UsersService } from '../users/users.service';
+import { SignUpDto } from '../users/dto/signUp.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -28,7 +29,7 @@ export class AuthController {
   }
 
   @Post('signup')
-  async create(@Body() data: CreateUserDto) {
+  async create(@Body() data: CreateUserDto): Promise<SignUpDto> {
     const foundUser = await this.usersService.findByEmail(data.email);
     if (foundUser !== null) {
       throw new HttpException('Email already exists', HttpStatus.BAD_REQUEST);
