@@ -49,6 +49,10 @@ export class UsersService {
   }
 
   async deleteUser(email: string): Promise<boolean> {
+    const user = await this.findByEmail(email);
+    if (!user) {
+      return false;
+    }
     const userDeleted = await this.usersRepository.delete(email);
     if (userDeleted) {
       return true;
