@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   HttpException,
   HttpStatus,
   Post,
@@ -12,7 +11,6 @@ import { CreateUserDto } from '../users/dto/createUser.dto';
 import { UsersService } from '../users/users.service';
 import { SignUpDto } from '../users/dto/signUp.dto';
 import { Public } from '../../common/decorators/publicRoute.decorator';
-import { User } from '../users/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -48,10 +46,5 @@ export class AuthController {
       );
     }
     return user;
-  }
-
-  @Get('users')
-  async getUsers(): Promise<User[]> {
-    return await this.authService.getAllUsers();
   }
 }

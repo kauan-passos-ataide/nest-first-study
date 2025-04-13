@@ -31,8 +31,4 @@ export class AuthService {
   async compareHash(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
   }
-
-  async getAllUsers() {
-    return await this.usersService.getAllUsers();
-  }
 }

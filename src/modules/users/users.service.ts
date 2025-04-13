@@ -44,11 +44,15 @@ export class UsersService {
     return this.usersRepository.findOneBy({ email });
   }
 
-  getAllUsers() {
-    return this.usersRepository.find();
-  }
-
   async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, 10);
+  }
+
+  async deleteUser(email: string): Promise<boolean> {
+    const userDeleted = await this.usersRepository.delete(email);
+    if (userDeleted) {
+      return true;
+    }
+    return false;
   }
 }
